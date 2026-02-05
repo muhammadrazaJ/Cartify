@@ -1,0 +1,105 @@
+@model Cartify.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    var returnUrl = ViewData["ReturnUrl"] as string ?? "/";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h2 class="card-title text-center mb-4">Sign In</h2>
+
+                <!-- Success/Error message container -->
+                <div id="alertContainer"></div>
+
+                <form id="loginForm" novalidate>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" placeholder="Enter your email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" placeholder="Enter your password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label"></label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100" id="btnLogin">
+                        Sign In
+                    </button>
+                </form>
+
+                <hr class="my-4" />
+                <p class="text-center text-muted mb-0">
+                    Don't have an account? <a asp-controller="Auth" asp-action="Register" asp-route-returnUrl="@returnUrl">Register</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('loginForm');
+            const alertContainer = document.getElementById('alertContainer');
+            const btnLogin = document.getElementById('btnLogin');
+
+            function showAlert(message, isSuccess) {
+                alertContainer.innerHTML = '<div class="alert alert-' + (isSuccess ? 'success' : 'danger') + ' alert-dismissible fade show" role="alert">' +
+                    message + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>';
+            }
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    return;
+                }
+
+                btnLogin.disabled = true;
+                btnLogin.textContent = 'Signing in...';
+
+                const formData = {
+                    email: document.querySelector('#Email').value,
+                    password: document.querySelector('#Password').value,
+                    rememberMe: document.querySelector('#RememberMe').checked
+                };
+
+                try {
+                    const response = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include', // Include cookies in request/response
+                        body: JSON.stringify(formData)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        showAlert(result.message || 'Login successful! Redirecting...', true);
+                        window.location.href = '@returnUrl';
+                    } else {
+                        showAlert(result.message || 'Invalid email or password.', false);
+                        btnLogin.disabled = false;
+                        btnLogin.textContent = 'Sign In';
+                    }
+                } catch (error) {
+                    showAlert('An error occurred. Please try again.', false);
+                    btnLogin.disabled = false;
+                    btnLogin.textContent = 'Sign In';
+                }
+            });
+        });
+    </script>
+}

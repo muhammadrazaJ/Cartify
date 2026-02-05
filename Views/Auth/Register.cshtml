@@ -1,0 +1,113 @@
+@model Cartify.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    var returnUrl = ViewData["ReturnUrl"] as string ?? "/";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h2 class="card-title text-center mb-4">Create Account</h2>
+
+                <!-- Success/Error message container -->
+                <div id="alertContainer"></div>
+
+                <form id="registerForm" novalidate>
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" placeholder="Enter your full name" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" placeholder="Enter your email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" placeholder="Enter password (min 6 characters)" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label"></label>
+                        <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm your password" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100" id="btnRegister">
+                        Register
+                    </button>
+                </form>
+
+                <hr class="my-4" />
+                <p class="text-center text-muted mb-0">
+                    Already have an account? <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@returnUrl">Sign In</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('registerForm');
+            const alertContainer = document.getElementById('alertContainer');
+            const btnRegister = document.getElementById('btnRegister');
+
+            function showAlert(message, isSuccess) {
+                alertContainer.innerHTML = '<div class="alert alert-' + (isSuccess ? 'success' : 'danger') + ' alert-dismissible fade show" role="alert">' +
+                    message + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>';
+            }
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    return;
+                }
+
+                btnRegister.disabled = true;
+                btnRegister.textContent = 'Creating account...';
+
+                const formData = {
+                    fullName: document.querySelector('#FullName').value,
+                    email: document.querySelector('#Email').value,
+                    password: document.querySelector('#Password').value,
+                    confirmPassword: document.querySelector('#ConfirmPassword').value
+                };
+
+                try {
+                    const response = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        showAlert(result.message + ' Redirecting to login...', true);
+                        setTimeout(() => {
+                            window.location.href = '@Url.Action("Login", "Auth", new { returnUrl })';
+                        }, 1500);
+                    } else {
+                        showAlert(result.message || 'Registration failed. Please try again.', false);
+                        btnRegister.disabled = false;
+                        btnRegister.textContent = 'Register';
+                    }
+                } catch (error) {
+                    showAlert('An error occurred. Please try again.', false);
+                    btnRegister.disabled = false;
+                    btnRegister.textContent = 'Register';
+                }
+            });
+        });
+    </script>
+}

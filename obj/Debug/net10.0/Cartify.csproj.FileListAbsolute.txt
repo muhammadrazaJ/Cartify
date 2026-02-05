@@ -282,10 +282,12 @@ D:\Cartify\Cartify\obj\Debug\net10.0\staticwebassets.build.json.cache
 D:\Cartify\Cartify\obj\Debug\net10.0\staticwebassets.development.json
 D:\Cartify\Cartify\obj\Debug\net10.0\staticwebassets.build.endpoints.json
 D:\Cartify\Cartify\obj\Debug\net10.0\swae.build.ex.cache
-D:\Cartify\Cartify\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 D:\Cartify\Cartify\obj\Debug\net10.0\Cartify.csproj.Up2Date
 D:\Cartify\Cartify\obj\Debug\net10.0\Cartify.dll
 D:\Cartify\Cartify\obj\Debug\net10.0\refint\Cartify.dll
 D:\Cartify\Cartify\obj\Debug\net10.0\Cartify.pdb
 D:\Cartify\Cartify\obj\Debug\net10.0\Cartify.genruntimeconfig.cache
 D:\Cartify\Cartify\obj\Debug\net10.0\ref\Cartify.dll
+D:\Cartify\Cartify\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\Cartify\Cartify\obj\Debug\net10.0\Cartify.sourcelink.json
+D:\Cartify\Cartify\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

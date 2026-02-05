@@ -1,0 +1,11 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    var userName = ViewData["UserName"] as string ?? "User";
+}
+
+<div class="text-center py-5">
+    <h1 class="display-4">Welcome, @userName!</h1>
+    <p class="lead text-muted">You are now logged in. This is a protected page.</p>
+    <p>Your JWT token is stored securely in an HttpOnly cookie.</p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary mt-3">Go to Home</a>
+</div>
