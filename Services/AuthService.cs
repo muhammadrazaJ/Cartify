@@ -60,8 +60,9 @@ namespace Cartify.Services
                 };
             }
 
-            // Assign default role
-            await _userManager.AddToRoleAsync(user, DefaultRole);
+            // Assign role from registration (User or Admin)
+            var role = IsValidRole(model.Role) ? model.Role : DefaultRole;
+            await _userManager.AddToRoleAsync(user, role);
 
             return new RegisterResponseDto
             {
@@ -118,6 +119,11 @@ namespace Cartify.Services
                 Role = role,
                 Message = "Login successful."
             };
+        }
+
+        private static bool IsValidRole(string? role)
+        {
+            return role is "User" or "Admin";
         }
     }
 }

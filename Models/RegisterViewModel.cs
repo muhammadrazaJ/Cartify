@@ -28,5 +28,12 @@ namespace Cartify.Models
         [Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "Password and confirmation do not match")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        /// <summary>
+        /// User role selected during registration. Default: User.
+        /// </summary>
+        [Required(ErrorMessage = "Role is required")]
+        [Display(Name = "Role")]
+        public string Role { get; set; } = "User";
     }
 }

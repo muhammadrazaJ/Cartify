@@ -38,6 +38,12 @@
                         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                     </div>
 
+                    <div class="mb-3">
+                        <label asp-for="Role" class="form-label"></label>
+                        <select asp-for="Role" class="form-select" asp-items='new[] { new SelectListItem("User", "User"), new SelectListItem("Admin", "Admin") }'></select>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+
                     <button type="submit" class="btn btn-primary w-100" id="btnRegister">
                         Register
                     </button>
@@ -80,7 +86,8 @@
                     fullName: document.querySelector('#FullName').value,
                     email: document.querySelector('#Email').value,
                     password: document.querySelector('#Password').value,
-                    confirmPassword: document.querySelector('#ConfirmPassword').value
+                    confirmPassword: document.querySelector('#ConfirmPassword').value,
+                    role: document.querySelector('#Role').value
                 };
 
                 try {

@@ -35,7 +35,8 @@ var jwtSettings = new JwtSettings();
 builder.Configuration.GetSection(JwtSettings.SectionName).Bind(jwtSettings);
 builder.Services.AddSingleton(jwtSettings);
 
-var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
+// Use Key or SecretKey from appsettings (Jwt:Key, Jwt:SecretKey)
+var signingKey = Encoding.UTF8.GetBytes(jwtSettings.GetSigningKey());
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -51,8 +52,22 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtSettings.Issuer,
         ValidAudience = jwtSettings.Audience,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ClockSkew = TimeSpan.Zero
+        IssuerSigningKey = new SymmetricSecurityKey(signingKey),
+        ClockSkew = TimeSpan.Zero,
+        // Role claim type - roles read ONLY from JWT (ClaimTypes.Role)
+        RoleClaimType = System.Security.Claims.ClaimTypes.Role,
+        NameClaimType = System.Security.Claims.ClaimTypes.NameIdentifier
+    };
+
+    // Ensure 401 for missing/invalid token, 403 for valid token but wrong role
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            if (context.Exception is SecurityTokenExpiredException)
+                context.Response.Headers.Append("Token-Expired", "true");
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -66,13 +81,16 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-// ============ Seed default "User" role ============
+// ============ Seed roles (User, Admin) for JWT claims ============
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    if (!await roleManager.RoleExistsAsync("User"))
+    foreach (var roleName in new[] { "User", "Admin" })
     {
-        await roleManager.CreateAsync(new IdentityRole("User"));
+        if (!await roleManager.RoleExistsAsync(roleName))
+        {
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
     }
 }
 
