@@ -88,7 +88,10 @@
 
                     if (response.ok && result.success) {
                         showAlert(result.message || 'Login successful! Redirecting...', true);
-                        window.location.href = '@returnUrl';
+                        // Redirect Admin to admin area, others to dashboard or returnUrl
+                        const role = (result.role || '').toLowerCase();
+                        const redirectUrl = role === 'admin' ? '@Url.Content("~/Admin")' : ('@returnUrl' || '@Url.Content("~/Dashboard")');
+                        window.location.href = redirectUrl;
                     } else {
                         showAlert(result.message || 'Invalid email or password.', false);
                         btnLogin.disabled = false;

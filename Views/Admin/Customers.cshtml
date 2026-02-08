@@ -1,0 +1,75 @@
+@model IReadOnlyList<Cartify.Models.CustomerListDto>
+@{
+    ViewData["Title"] = "Customer Management";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2">Customer Management</h1>
+    <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-secondary">Back to Dashboard</a>
+</div>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-hover table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count > 0)
+            {
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td>@c.FullName</td>
+                        <td>@c.Email</td>
+                        <td>@(c.PhoneNumber ?? "—")</td>
+                        <td>@c.Role</td>
+                        <td>
+                            @if (c.Status == Cartify.Models.UserStatus.Active)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td>@c.CreatedAt.ToString("yyyy-MM-dd")</td>
+                        <td class="text-end">
+                            <a asp-controller="Admin" asp-action="Details" asp-route-id="@c.UserId" class="btn btn-sm btn-outline-primary">View</a>
+                            @if (c.Status == Cartify.Models.UserStatus.Active)
+                            {
+                                <a asp-controller="Admin" asp-action="ConfirmStatus" asp-route-id="@c.UserId" asp-route-activate="false" class="btn btn-sm btn-outline-warning">Deactivate</a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Admin" asp-action="ConfirmStatus" asp-route-id="@c.UserId" asp-route-activate="true" class="btn btn-sm btn-outline-success">Activate</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">No customers found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -74,6 +74,8 @@ builder.Services.AddAuthentication(options =>
 // ============ Services ============
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+// Admin user management (in-memory; replace with EF Core when DB is ready)
+builder.Services.AddScoped<Cartify.Services.IAdminUserService, Cartify.Services.AdminUserInMemoryService>();
 
 builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();

@@ -11,5 +11,8 @@
     <p><strong>Role from JWT:</strong> @role</p>
     <p><strong>User ID:</strong> @userId</p>
     <p><strong>Email:</strong> @email</p>
-    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary mt-3">Go to Home</a>
+    <div class="mt-4">
+        <a asp-controller="Admin" asp-action="Customers" class="btn btn-primary me-2">Customer Management</a>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">Go to Home</a>
+    </div>
 </div>

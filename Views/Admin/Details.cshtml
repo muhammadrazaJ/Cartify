@@ -1,0 +1,73 @@
+@model Cartify.Models.CustomerDetailDto
+@{
+    ViewData["Title"] = "Customer Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2">Customer Details</h1>
+    <a asp-controller="Admin" asp-action="Customers" class="btn btn-outline-secondary">Back to List</a>
+</div>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (Model != null)
+{
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">User ID</dt>
+                <dd class="col-sm-9">@Model.UserId</dd>
+
+                <dt class="col-sm-3">Full Name</dt>
+                <dd class="col-sm-9">@Model.FullName</dd>
+
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
+
+                <dt class="col-sm-3">Phone</dt>
+                <dd class="col-sm-9">@(Model.PhoneNumber ?? "—")</dd>
+
+                <dt class="col-sm-3">Role</dt>
+                <dd class="col-sm-9">@Model.Role</dd>
+
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Status == Cartify.Models.UserStatus.Active)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Created</dt>
+                <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm") UTC</dd>
+            </dl>
+
+            <hr class="my-4" />
+
+            <div class="d-flex gap-2">
+                @if (Model.Status == Cartify.Models.UserStatus.Active)
+                {
+                    <a asp-controller="Admin" asp-action="ConfirmStatus" asp-route-id="@Model.UserId" asp-route-activate="false" class="btn btn-warning">Deactivate Account</a>
+                }
+                else
+                {
+                    <a asp-controller="Admin" asp-action="ConfirmStatus" asp-route-id="@Model.UserId" asp-route-activate="true" class="btn btn-success">Activate Account</a>
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p class="text-muted">Customer not found.</p>
+}
