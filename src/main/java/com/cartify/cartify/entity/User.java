@@ -51,6 +51,7 @@ public class User {
     @Column(name = "phone_number", length = 50)
     private String phoneNumber;
 
+    /** Role for Spring Security authorization (ADMIN / CUSTOMER). Stored as enum in DB. */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Role role = Role.CUSTOMER;

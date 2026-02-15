@@ -5,5 +5,12 @@ package com.cartify.cartify.entity;
  */
 public enum UserStatus {
     ACTIVE,
-    INACTIVE
+    INACTIVE;
+
+    /**
+     * Whether the account is active and allowed to authenticate.
+     */
+    public boolean isActive() {
+        return this == ACTIVE;
+    }
 }
