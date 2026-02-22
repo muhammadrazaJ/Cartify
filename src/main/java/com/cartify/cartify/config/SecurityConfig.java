@@ -14,6 +14,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 
 /**
  * Production-ready Spring Security 6 configuration for Cartify E-Commerce.
@@ -75,7 +77,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 // ----- CSRF: Enabled by default; Thymeleaf automatically includes the token in forms -----
-                .csrf(Customizer.withDefaults())
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler())
+                )
 
                 // ----- Authorization Rules (order: most-specific first) -----
                 .authorizeHttpRequests(auth -> auth
