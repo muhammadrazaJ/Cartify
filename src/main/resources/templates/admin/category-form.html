@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${formTitle}">Category Form — Cartify</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --clr-bg: #0f1117;
+            --clr-surface: #1a1d27;
+            --clr-surface-2: #212434;
+            --clr-border: #2e3147;
+            --clr-primary: #6c63ff;
+            --clr-primary-2: #a78bfa;
+            --clr-primary-glow: rgba(108, 99, 255, 0.25);
+            --clr-text: #e2e4ed;
+            --clr-text-muted: #7c82a0;
+            --clr-label: #a8afc8;
+            --clr-error: #f87171;
+            --radius-sm: 6px;
+            --radius-lg: 20px;
+            --shadow-card: 0 24px 64px rgba(0, 0, 0, 0.55);
+            --shadow-glow: 0 0 30px rgba(108, 99, 255, 0.18);
+            --transition: 0.22s ease;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--clr-bg);
+            color: var(--clr-text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            background-image:
+                radial-gradient(ellipse 60% 60% at 20% 10%, rgba(108, 99, 255, .12) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 50% at 80% 90%, rgba(99, 179, 255, .08) 0%, transparent 70%);
+        }
+
+        .card {
+            width: 100%;
+            max-width: 720px;
+            background: var(--clr-surface);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-lg);
+            padding: 44px 40px;
+            box-shadow: var(--shadow-card), var(--shadow-glow);
+            animation: fadeUp .45s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-2));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .brand-name {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -.3px;
+            background: linear-gradient(90deg, #6c63ff, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card-heading {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .card-sub {
+            font-size: 14px;
+            color: var(--clr-text-muted);
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--clr-label);
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--clr-surface-2);
+            border: 1.5px solid var(--clr-border);
+            border-radius: var(--radius-sm);
+            color: var(--clr-text);
+            font-size: 14px;
+            /* ✅ fix: inherit the Inter font */
+            font-family: inherit;
+            outline: none;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--clr-text-muted);
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--clr-primary);
+            box-shadow: 0 0 0 3px var(--clr-primary-glow);
+        }
+
+        input.is-invalid,
+        textarea.is-invalid {
+            border-color: var(--clr-error);
+        }
+
+        .field-error {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            margin-top: 6px;
+            color: var(--clr-error);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .field-error::before {
+            content: '⚠';
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .btn-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .btn-primary {
+            padding: 11px 24px;
+            background: linear-gradient(135deg, var(--clr-primary), #7c6ffa);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(108, 99, 255, .4);
+            transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            opacity: .95;
+            box-shadow: 0 6px 24px rgba(108, 99, 255, .55);
+        }
+
+        .btn-secondary {
+            padding: 11px 24px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--clr-border);
+            background: var(--clr-surface-2);
+            color: var(--clr-text);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color var(--transition), background var(--transition);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--clr-primary);
+            background: #26293a;
+        }
+
+        @media (max-width: 520px) {
+            .card { padding: 32px 22px; }
+            .btn-row { flex-direction: column-reverse; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="brand">
+        <div class="brand-icon">🗂</div>
+        <span class="brand-name">Cartify Admin</span>
+    </div>
+
+    <h1 class="card-heading" th:text="${formTitle}">Category</h1>
+    <p class="card-sub">Create or update a product category.</p>
+
+    <form th:action="${formAction}" th:object="${categoryDto}" method="post" novalidate>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <div class="form-group">
+            <label for="categoryName">Name</label>
+            <input id="categoryName" type="text"
+                   th:field="*{categoryName}"
+                   th:classappend="${#fields.hasErrors('categoryName')} ? 'is-invalid'"
+                   placeholder="e.g. Electronics" />
+            <div class="field-error" th:if="${#fields.hasErrors('categoryName')}" th:errors="*{categoryName}"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" rows="4"
+                      th:field="*{description}"
+                      th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
+                      placeholder="Short description of this category"></textarea>
+            <div class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+        </div>
+
+        <div class="btn-row">
+            <a class="btn-secondary" th:href="@{/admin/categories}">← Cancel</a>
+            <button type="submit" class="btn-primary">Save Category</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

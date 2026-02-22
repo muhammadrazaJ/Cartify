@@ -99,6 +99,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/products/**").hasRole("ADMIN")
                         .requestMatchers("/admin/orders/**").hasRole("ADMIN")
                         .requestMatchers("/admin/users/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/categories/**").hasRole("ADMIN")
 
                         // ── Admin catch-all: ROLE_ADMIN only ─────────────────────────
                         // Covers /admin/dashboard and any other admin path not listed above.
